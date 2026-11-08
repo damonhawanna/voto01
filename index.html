@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Voto Seguro · Elecciones escolares</title>
+  <meta name="description" content="Sistema de votación escolar offline con registro verificable en blockchain local.">
+  <meta name="theme-color" content="#0b2545">
+  <meta name="color-scheme" content="light dark">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Voto Seguro">
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <a class="skip-link" href="#view">Saltar al contenido</a>
+
+  <!-- Pantalla de carga -->
+  <div id="boot" class="boot-screen" role="status" aria-live="polite">
+    <img src="assets/logo.svg" alt="" class="boot-logo" width="56" height="56">
+    <p class="boot-text">Cargando sistema electoral…</p>
+    <div class="boot-bar"><span></span></div>
+  </div>
+
+  <!-- Primera configuración: registro de la institución educativa -->
+  <section id="screen-setup" class="auth-screen" hidden>
+    <aside class="auth-brand">
+      <div class="brand-mark">
+        <img src="assets/logo.svg" alt="" width="44" height="44">
+        <div>
+          <strong>Voto Seguro</strong>
+          <span>Elecciones escolares verificables</span>
+        </div>
+      </div>
+      <h1>Configura tu institución educativa</h1>
+      <p class="auth-lead">Esta app funciona <strong>sin internet</strong> y guarda todo en este dispositivo. Registra los datos del colegio que realizará la jornada electoral.</p>
+      <ul class="auth-points">
+        <li><span aria-hidden="true">🔐</span> Acceso protegido con PIN de administración</li>
+        <li><span aria-hidden="true">⛓️</span> Cada voto se sella en una cadena de bloques verificable</li>
+        <li><span aria-hidden="true">📴</span> Online u offline: instálala en PC, laptop o teléfono</li>
+        <li><span aria-hidden="true">🗳️</span> Incluye modo demo y tutorial guiado</li>
+      </ul>
+      <p class="auth-foot">Los datos nunca salen de tu equipo. Puedes exportar un respaldo y el acta al finalizar.</p>
+    </aside>
+
+    <div class="auth-panel">
+      <form id="form-setup" class="auth-card" novalidate>
+        <div class="auth-mobile-brand">
+          <img src="assets/logo.svg" alt="" width="36" height="36">
+          <strong>Voto Seguro</strong>
+        </div>
+        <p class="eyebrow">Paso 1 de 1 · Registro</p>
+        <h2>Datos de la institución</h2>
+        <p class="muted small">Estos datos aparecerán en el acta y en los comprobantes de voto.</p>
+
+        <div class="field">
+          <label for="su-name">Nombre de la institución educativa <span class="req">*</span></label>
+          <input id="su-name" name="name" type="text" autocomplete="organization" required maxlength="90" placeholder="I.E. La Esmeralda">
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="su-acronym">Siglas</label>
+            <input id="su-acronym" name="acronym" type="text" maxlength="8" placeholder="IELA" autocapitalize="characters">
+            <p class="hint">Se usan en el logo cuando no subes uno.</p>
+          </div>
+          <div class="field">
+            <label for="su-code">Código modular</label>
+            <input id="su-code" name="code" type="text" inputmode="numeric" maxlength="12" placeholder="Opcional">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="su-place">Región / UGEL</label>
+          <input id="su-place" name="place" type="text" maxlength="80" placeholder="Huancavelica · UGEL Churcampa">
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="su-process">Proceso electoral <span class="req">*</span></label>
+            <select id="su-process" name="processName">
+              <option>Municipio Escolar</option>
+              <option>Centro de Estudiantes</option>
+              <option>Delegado de Aula</option>
+              <option>Consejo Estudiantil</option>
+              <option>Elección general</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="su-year">Año <span class="req">*</span></label>
+            <input id="su-year" name="year" type="number" min="2020" max="2100" step="1" required>
+          </div>
+        </div>
+
+        <hr class="rule">
+
+        <h3>Administrador del sistema</h3>
+        <div class="field">
+          <label for="su-admin">Nombre del administrador</label>
+          <input id="su-admin" name="adminName" type="text" autocomplete="name" maxlength="70" placeholder="Opcional">
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="su-pin">PIN de administración <span class="req">*</span></label>
+            <div class="input-reveal">
+              <input id="su-pin" name="pin" type="password" inputmode="numeric" minlength="6" maxlength="32" autocomplete="new-password" required placeholder="Mínimo 6 caracteres">
+              <button type="button" class="reveal" data-reveal="su-pin" aria-label="Mostrar PIN">Ver</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="su-pin2">Repetir PIN <span class="req">*</span></label>
+            <input id="su-pin2" name="pin2" type="password" inputmode="numeric" minlength="6" maxlength="32" autocomplete="new-password" required>
+          </div>
+        </div>
+
+        <label class="check">
+          <input type="checkbox" id="su-hide" name="hideResults" checked>
+          <span>Ocultar resultados hasta cerrar la jornada electoral</span>
+        </label>
+
+        <p id="setup-error" class="alert alert-danger" role="alert" hidden></p>
+
+        <button class="btn btn-primary btn-lg btn-block" type="submit">
+          Crear institución y entrar
+        </button>
+        <p class="hint center">¿Solo quieres probar? Podrás explorar la pestaña <strong>Demo</strong> sin configurar nada.</p>
+        <button class="btn btn-ghost btn-block" type="button" data-open-demo>🧪 Probar la demo sin configurar</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Inicio de sesión -->
+  <section id="screen-login" class="auth-screen" hidden>
+    <div class="login-card">
+      <div id="login-brand" class="login-brand"></div>
+      <p class="eyebrow">Acceso restringido</p>
+      <h2>Ingresa tu PIN</h2>
+      <p id="login-sub" class="muted small"></p>
+      <form id="form-login" novalidate>
+        <div class="field">
+          <label for="li-pin" class="sr-only">PIN de administración</label>
+          <div class="input-reveal">
+            <input id="li-pin" type="password" inputmode="numeric" minlength="6" maxlength="32" autocomplete="current-password" required placeholder="PIN de administración" autofocus>
+            <button type="button" class="reveal" data-reveal="li-pin" aria-label="Mostrar PIN">Ver</button>
+          </div>
+        </div>
+        <p id="login-error" class="alert alert-danger" role="alert" hidden></p>
+        <button class="btn btn-primary btn-lg btn-block" type="submit">Entrar</button>
+      </form>
+      <div class="login-alt">
+        <button class="btn btn-ghost btn-sm" type="button" data-open-demo>Entrar al modo Demo</button>
+      </div>
+      <p class="hint center">Institución configurada en este dispositivo.</p>
+    </div>
+  </section>
+
+  <!-- Aplicación -->
+  <div id="app" class="app" hidden>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <img src="assets/logo.svg" alt="" width="38" height="38">
+          <div class="brand-text">
+            <strong id="brand-name">Institución</strong>
+            <span id="brand-process">Proceso electoral</span>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <span id="net-badge" class="badge badge-net" title="Estado de la conexión">Online</span>
+          <button class="icon-btn" id="btn-theme" type="button" aria-label="Cambiar tema" title="Cambiar tema">
+            <span aria-hidden="true">◐</span>
+          </button>
+          <button class="btn btn-ghost btn-sm" id="btn-lock" type="button" title="Cerrar sesión">
+            <span aria-hidden="true">🔒</span> <span class="lock-label">Bloquear</span>
+          </button>
+        </div>
+      </div>
+      <nav class="tabs" id="tabs" aria-label="Secciones">
+        <button type="button" data-view="panel">Panel</button>
+        <button type="button" data-view="votar">Votar</button>
+        <button type="button" data-view="resultados">Resultados</button>
+        <button type="button" data-view="blockchain">Blockchain</button>
+        <button type="button" data-view="configurar">Configurar</button>
+        <button type="button" data-view="demo">Demo</button>
+        <button type="button" data-view="tutorial">Tutorial</button>
+      </nav>
+    </header>
+
+    <main id="view" class="view" tabindex="-1"></main>
+
+    <footer class="footer">
+      <span>Voto Seguro · datos guardados solo en este dispositivo</span>
+      <span id="foot-version">v1.0</span>
+    </footer>
+  </div>
+
+  <!-- Contenedores auxiliares -->
+  <div id="modal-root"></div>
+  <div id="toast-root" class="toast-root" aria-live="polite" aria-atomic="true"></div>
+  <div id="print-root" hidden></div>
+
+  <noscript>
+    <div class="alert alert-danger" style="margin:2rem">Esta aplicación necesita JavaScript habilitado para funcionar.</div>
+  </noscript>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
